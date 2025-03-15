@@ -2,7 +2,7 @@ import requests
 
 
 class CustomRequester:
-    def __init__(self, base_url, headers=None):
+    def __init__(self,session, base_url, headers=None):
         """
         Инициализация реквестера.
         :param base_url: Базовый URL для API.
@@ -10,6 +10,7 @@ class CustomRequester:
         """
         self.base_url = base_url
         self.headers = headers or {}
+        self.session = session
 
     def send_request(self, method, endpoint, data=None, params=None, headers=None, expected_status=200):
         """
@@ -28,7 +29,7 @@ class CustomRequester:
         request_headers = {**self.headers, **(headers or {})}
 
         # Отправляем запрос
-        response = requests.request(
+        response = self.session.request(
             method=method,
             url=url,
             headers=request_headers,
@@ -47,6 +48,15 @@ class CustomRequester:
             )
 
         return response
+
+    def _update_session_headers(self,  **kwargs):
+        """
+        Обновление заголовков сессии.
+        :param session: Объект requests.Session, предоставленный API-классом.
+        :param kwargs: Дополнительные заголовки.
+        """
+        self.headers.update(kwargs)  # Обновляем базовые заголовки
+        self.session.headers.update(self.headers)  # Обновляем заголовки в текущей сессии
 
     def log_request_and_response(self, response):
         """
