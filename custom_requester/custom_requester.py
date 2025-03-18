@@ -12,7 +12,7 @@ class CustomRequester:
         self.headers = headers or {}
         self.session = session
 
-    def send_request(self, method, endpoint, data=None, params=None, headers=None, expected_status=200):
+    def send_request(self, method, endpoint, data=None, params=None, headers=None, expected_status=None):
         """
         Универсальный метод для отправки запросов.
         :param method: HTTP метод (GET, POST, DELETE, PATCH и т.д.).
