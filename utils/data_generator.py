@@ -43,3 +43,8 @@ class DataGenerator:
         random.shuffle(password)
 
         return ''.join(password)
+
+    @staticmethod
+    def generate_random_int(max_value: int = 100) -> int:
+        return random.randint(1, max_value)
+

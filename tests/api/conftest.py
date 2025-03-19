@@ -1,5 +1,8 @@
+import os
 import pytest
 import requests
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 from constants import LOGIN_DATA, Roles, BASE_URL
 from api.api_manager import ApiManager
 from custom_requester.custom_requester import CustomRequester
@@ -8,6 +11,15 @@ from entities.user import User
 from models.base_models import TestUser
 from resources.user_creds import SuperAdminCreds
 from utils.data_generator import DataGenerator
+
+from resources.user_creds import DbCreds
+
+@pytest.fixture(scope="module")
+def db_session():
+    session = DbCreds.SessionLocal()
+    yield session
+    session.close()
+
 
 
 @pytest.fixture
