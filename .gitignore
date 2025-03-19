@@ -7,3 +7,5 @@ Project_Default.xml
 .venv
 vcs.xml
 workspace.xml
+allure-results
+allure-results-report
