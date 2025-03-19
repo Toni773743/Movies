@@ -5,3 +5,5 @@ profiles_settings.xml
 Project_Default.xml
 .env
 .venv
+vcs.xml
+workspace.xml

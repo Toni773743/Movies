@@ -1,3 +1,4 @@
+import logging
 import requests
 
 
@@ -11,42 +12,25 @@ class CustomRequester:
         self.base_url = base_url
         self.headers = headers or {}
         self.session = session
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
 
-    def send_request(self, method, endpoint, data=None, params=None, headers=None, expected_status=None):
+    def send_request(self, method, endpoint, data=None, expected_status=201, need_logging=True):
         """
         Универсальный метод для отправки запросов.
-        :param method: HTTP метод (GET, POST, DELETE, PATCH и т.д.).
-        :param endpoint: Путь к ресурсу (например, "/movies").
-        :param data: Тело запроса для POST/PUT.
-        :param params: Параметры для GET-запросов.
-        :param headers: Дополнительные заголовки (объединяются с базовыми).
+        :param method: HTTP метод (GET, POST, PUT, DELETE и т.д.).
+        :param endpoint: Эндпоинт (например, "/login").
+        :param data: Тело запроса (JSON-данные).
         :param expected_status: Ожидаемый статус-код (по умолчанию 200).
-        :return: Объект ответа.
+        :param need_logging: Флаг для логирования (по умолчанию True).
+        :return: Объект ответа requests.Response.
         """
-        # Собираем полный URL
         url = f"{self.base_url}{endpoint}"
-        # Объединяем заголовки
-        request_headers = {**self.headers, **(headers or {})}
-
-        # Отправляем запрос
-        response = self.session.request(
-            method=method,
-            url=url,
-            headers=request_headers,
-            json=data,
-            params=params,
-        )
-
-        # Логирование
-        self.log_request_and_response(response)
-
-        # Проверка статуса
+        response = requests.request(method, url, json=data, headers=self.headers)
+        if need_logging:
+            self.log_request_and_response(response)
         if response.status_code != expected_status:
-            raise ValueError(
-                f"Unexpected status code: {response.status_code}. "
-                f"Expected: {expected_status}. Response: {response.text}"
-            )
-
+            raise ValueError(f"Unexpected status code: {response.status_code}. Expected: {expected_status}")
         return response
 
     def _update_session_headers(self,  **kwargs):
@@ -60,8 +44,8 @@ class CustomRequester:
 
     def log_request_and_response(self, response):
         """
-        Логирование запроса и ответа.
-        :param response: Объект ответа.
+        Логирование запросов и ответов.
+        :param response: Объект ответа requests.Response.
         """
         print("\n======================================== REQUEST ========================================")
         print(f"Method: {response.request.method}")

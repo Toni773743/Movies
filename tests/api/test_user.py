@@ -1,5 +1,5 @@
 
-class TestUser:
+class TestUserTests:
 
     def test_create_user(self, super_admin, creation_user_data):
         response = super_admin.api.user_api.create_user(creation_user_data).json()

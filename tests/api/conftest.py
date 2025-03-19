@@ -1,9 +1,11 @@
 import pytest
 import requests
-from constants import LOGIN_DATA, Roles
+from constants import LOGIN_DATA, Roles, BASE_URL
 from api.api_manager import ApiManager
+from custom_requester.custom_requester import CustomRequester
 from data.data_generator import DataGenerator
 from entities.user import User
+from models.base_models import TestUser
 from resources.user_creds import SuperAdminCreds
 from utils.data_generator import DataGenerator
 
@@ -30,6 +32,14 @@ def admin( api_manager):
 def movie_data():
    return DataGenerator.movie_data()
 
+
+@pytest.fixture(scope="session")
+def requester():
+    """
+    Фикстура для создания экземпляра CustomRequester.
+    """
+    session = requests.Session()
+    return CustomRequester(session=session, base_url=BASE_URL)
 
 
 @pytest.fixture
@@ -71,14 +81,13 @@ def super_admin(user_session):
 @pytest.fixture
 def test_user():
     random_password = DataGenerator.generate_random_password()
-
-    return {
-        "email": DataGenerator.generate_random_email(),
-        "fullName": DataGenerator.generate_random_name(),
-        "password": random_password,
-        "passwordRepeat": random_password,
-        "roles": [Roles.USER.value]
-    }
+    return TestUser(
+        email=DataGenerator.generate_random_email(),
+        fullName=DataGenerator.generate_random_name(),
+        password=random_password,
+        passwordRepeat=random_password,
+        roles=[Roles.USER.value]
+    )
 
 @pytest.fixture(scope="function")
 def creation_user_data(test_user):
