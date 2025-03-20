@@ -5,3 +5,9 @@ profiles_settings.xml
 Project_Default.xml
 .env
 .venv
+allure-results
+allure-results-report
+vcs.xml
+workspace.xml
+allure-results
+allure-results-report
