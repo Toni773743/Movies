@@ -1,8 +1,8 @@
 import allure
 import pytest
+import uuid
 from sqlalchemy.orm import Session
 from db_requester.models import AccountTransactionTemplate
-from utils.data_generator import DataGenerator
 
 
 @allure.epic("Тестирование транзакций")
@@ -11,8 +11,8 @@ class TestAccountTransactionTemplate:
 
     def test_accounts_transaction_template(self, db_session: Session):
         with allure.step("Создание тестовых данных в базе данных: счета Stan и Bob"):
-            stan = AccountTransactionTemplate(user=f"Stan_{DataGenerator.generate_random_int(10)}", balance=1000)
-            bob = AccountTransactionTemplate(user=f"Bob_{DataGenerator.generate_random_int(10)}", balance=500)
+            stan = AccountTransactionTemplate(user=f"Stan_{uuid.uuid4()}", balance=1000)
+            bob = AccountTransactionTemplate(user=f"Bob_{uuid.uuid4()}", balance=500)
             db_session.add_all([stan, bob])
             db_session.commit()
 
