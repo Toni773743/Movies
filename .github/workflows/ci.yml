@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - main  # Запускаем CI при пуше в ветку main
+      - Alchemy  # Запускаем CI при пуше в ветку
   pull_request:
     branches:
-      - main  # Запускаем CI при создании пул-реквеста в ветку main
+      - Alchemy  # Запускаем CI при создании пул-реквеста в ветку
 
 jobs:
   test:
@@ -26,6 +26,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install pydantic pytest
 
+      - name: Run tests
+        env:
+          SUPER_ADMIN_USERNAME: ${{ secrets.SUPER_ADMIN_USERNAME }}
+          SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
+          HOST: ${{ secrets.HOST }}
+          PORT: ${{ secrets.PORT }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          USERNAME_DB: ${{ secrets.USERNAME_DB }}
+          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+          BASE_URL_LOGIN: ${{ secrets.BASE_URL_LOGIN }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_DATA: ${{ secrets.LOGIN_DATA }}
+
+        run: |
+          echo "BASE_URL=$BASE_URL" >> $GITHUB_ENV
+          echo "HOST=$HOST" >> $GITHUB_ENV
+          echo "PORT=$PORT" >> $GITHUB_ENV    
+      
+
       - name: Run tests # Запускает тесты с помощью pytest.
         run: |
-          pytest test_models.py
+          pytest
