@@ -1,8 +1,6 @@
-import os
+import json
 import pytest
 import requests
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
 from constants import LOGIN_DATA, Roles, BASE_URL
 from api.api_manager import ApiManager
 from custom_requester.custom_requester import CustomRequester
@@ -15,7 +13,7 @@ from utils.data_generator import DataGenerator
 from resources.user_creds import DbCreds
 
 @pytest.fixture(scope="module")
-def db_session():
+def db_session(session):
     session = DbCreds.SessionLocal()
     yield session
     session.close()
@@ -103,12 +101,15 @@ def test_user():
 
 @pytest.fixture(scope="function")
 def creation_user_data(test_user):
-    updated_data = test_user.copy()
+    # Преобразуем модель в словарь, используя model_dump_json и json.loads для автоматического преобразования enum в строки
+    updated_data = json.loads(test_user.model_dump_json())
     updated_data.update({
         "verified": True,
         "banned": False
     })
     return updated_data
+
+
 
 @pytest.fixture
 def common_user(user_session, super_admin, creation_user_data):
