@@ -54,6 +54,10 @@ jobs:
           echo "BASE_URL=${BASE_URL}" >> $GITHUB_ENV
           echo "LOGIN_DATA=${LOGIN_DATA}" >> $GITHUB_ENV
 
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+
       - name: Run tests
         run: |
           pytest --maxfail=1 --disable-warnings -q
