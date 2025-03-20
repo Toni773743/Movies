@@ -1,8 +1,11 @@
+import os
+
 from custom_requester.custom_requester import CustomRequester
 
 
 class UserApi(CustomRequester):
-    USER_BASE_URL = "https://auth.dev-cinescope.coconutqa.ru/"
+    USER_BASE_URL = os.getenv('BASE_URL_LOGIN')
+
 
     def __init__(self, session):
         self.session = session

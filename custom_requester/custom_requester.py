@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-
 import requests
 
 
@@ -18,7 +17,7 @@ class CustomRequester:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-    def send_request(self, method, endpoint, data=None, expected_status=201, need_logging=True):
+    def send_request(self, method, endpoint, data=None, expected_status=201, params=None, need_logging=True):
         """
         Универсальный метод для отправки запросов.
         :param method: HTTP метод (GET, POST, PUT, DELETE и т.д.).
@@ -29,7 +28,7 @@ class CustomRequester:
         :return: Объект ответа requests.Response.
         """
         url = f"{self.base_url}{endpoint}"
-        response = requests.request(method, url, json=data, headers=self.headers)
+        response = self.session.request(method, url,params=params, json=data, headers=self.headers)
         if need_logging:
             self.log_request_and_response(response)
         if response.status_code != expected_status:
@@ -102,5 +101,3 @@ class CustomRequester:
 
         except Exception as e:
             self.logger.error(f"\nLogging failed: {type(e)} - {e}")
-
-

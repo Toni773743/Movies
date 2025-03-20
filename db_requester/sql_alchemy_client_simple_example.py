@@ -18,27 +18,25 @@ Base = declarative_base()
 connection_string = f"postgresql+psycopg2://{username}:{password}@{host}:{port}/{database_name}"
 #обьект для подключения к базе данных
 engine = create_engine(connection_string)
-#
-# def sdl_alchemy_sql():
-#     query = """
-#     SELECT id, email, full_name, "password", created_at, updated_at, verified, banned, roles
-#     FROM public.users
-#     WHERE id = :user_id;
-#     """
-#
-#     # Параметры запроса для подстановки в наш SQL запрос
-#     user_id = "3a172562-e05d-4768-82dd-a098d8e7bbb3"
-#
-#     # Выполняем запрос
-#     with engine.connect() as connection: #выполняем соединенеи с базой данных и автоматически закрываем его по завершени выполнения
-#         result = connection.execute(text(query), {"user_id": user_id})
-#         for row in result:
-#             print(row)
+
+def sdl_alchemy_sql():
+    query = """
+    SELECT id, email, full_name, "password", created_at, updated_at, verified, banned, roles
+    FROM public.users
+    WHERE id = :user_id;
+    """
+
+    # Параметры запроса для подстановки в наш SQL запрос
+    user_id = "3a172562-e05d-4768-82dd-a098d8e7bbb3"
+
+    # Выполняем запрос
+    with engine.connect() as connection: #выполняем соединенеи с базой данных и автоматически закрываем его по завершени выполнения
+        result = connection.execute(text(query), {"user_id": user_id})
+        for row in result:
+            print(row)
 
 def sdl_alchemy_orm():
     # Базовый класс для моделей
-    Base = declarative_base()
-
     # Модель таблицы users
     class User(Base):
         __tablename__ = 'users'
@@ -76,5 +74,5 @@ def sdl_alchemy_orm():
         print("Пользователь не найден.")
 
 if __name__ == '__main__':
-    #sdl_alchemy_sql()
+    sdl_alchemy_sql()
     sdl_alchemy_orm()

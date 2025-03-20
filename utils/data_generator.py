@@ -1,8 +1,12 @@
 import random
 import string
+from faker import Faker
+from data.data_generator import fake
+
 
 
 class DataGenerator:
+    fake = Faker()
 
     @staticmethod
     def generate_random_email():
@@ -47,4 +51,16 @@ class DataGenerator:
     @staticmethod
     def generate_random_int(max_value: int = 100) -> int:
         return random.randint(1, max_value)
+
+    @staticmethod
+    def movie_data():
+        return {
+            "name": fake.sentence(nb_words=3),
+            "imageUrl": fake.image_url(),
+            "price": fake.random_int(min=50, max=500),
+            "description": fake.text(),
+            "location": "MSK",
+            "published": fake.boolean(),
+            "genreId": fake.random_int(min=1, max=10)
+        }
 

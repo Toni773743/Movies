@@ -1,14 +1,19 @@
-BASE_URL_LOGIN = "https://auth.dev-cinescope.coconutqa.ru"
-BASE_URL = "https://api.dev-cinescope.coconutqa.ru"
+from enum import Enum
+import os
+from dotenv import load_dotenv
+load_dotenv()
+import ast
+
+
+BASE_URL_LOGIN = os.getenv('BASE_URL_LOGIN')
+BASE_URL = os.getenv('BASE_URL')
 LOGIN_ENDPOINT = "/login"
-LOGIN_DATA =  ("test-admin@mail.com", "KcLMmxkJMjBD1")
+LOGIN_DATA = ast.literal_eval(os.getenv('LOGIN_DATA'))
 HEADERS = {
     "Content-Type": "application/json",
     "Accept": "application/json"
 }
 REGISTER_ENDPOINT = "/register"
-
-from enum import Enum
 
 
 class Roles(Enum):
