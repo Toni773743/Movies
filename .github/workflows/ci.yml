@@ -3,30 +3,34 @@ name: CI
 on:
   push:
     branches:
-      - Alchemy  # Запускаем CI при пуше в ветку
+      - Alchemy  # Запускаем CI при пуше в ветку Alchemy
   pull_request:
     branches:
-      - Alchemy  # Запускаем CI при создании пул-реквеста в ветку
+      - Alchemy  # Запускаем CI при создании пул-реквеста в ветку Alchemy
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code # CI/CD клонирует ваш репозиторий.
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up Python # Устанавливает Python.
-        uses: actions/setup-python@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
 
-      - name: Install dependencies # Устанавливает зависимости (Pydantic и pytest).
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pydantic pytest
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install pydantic pytest requests Faker python-dotenv SQLAlchemy allure-python-commons
+          fi
 
-      - name: Run tests
+      - name: Set environment variables
         env:
           SUPER_ADMIN_USERNAME: ${{ secrets.SUPER_ADMIN_USERNAME }}
           SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
@@ -38,13 +42,18 @@ jobs:
           BASE_URL_LOGIN: ${{ secrets.BASE_URL_LOGIN }}
           BASE_URL: ${{ secrets.BASE_URL }}
           LOGIN_DATA: ${{ secrets.LOGIN_DATA }}
-
         run: |
-          echo "BASE_URL=$BASE_URL" >> $GITHUB_ENV
-          echo "HOST=$HOST" >> $GITHUB_ENV
-          echo "PORT=$PORT" >> $GITHUB_ENV    
-      
+          echo "SUPER_ADMIN_USERNAME=${SUPER_ADMIN_USERNAME}" >> $GITHUB_ENV
+          echo "SUPER_ADMIN_PASSWORD=${SUPER_ADMIN_PASSWORD}" >> $GITHUB_ENV
+          echo "HOST=${HOST}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
+          echo "DATABASE_NAME=${DATABASE_NAME}" >> $GITHUB_ENV
+          echo "USERNAME_DB=${USERNAME_DB}" >> $GITHUB_ENV
+          echo "PASSWORD_DB=${PASSWORD_DB}" >> $GITHUB_ENV
+          echo "BASE_URL_LOGIN=${BASE_URL_LOGIN}" >> $GITHUB_ENV
+          echo "BASE_URL=${BASE_URL}" >> $GITHUB_ENV
+          echo "LOGIN_DATA=${LOGIN_DATA}" >> $GITHUB_ENV
 
-      - name: Run tests # Запускает тесты с помощью pytest.
+      - name: Run tests
         run: |
-          pytest
+          pytest --maxfail=1 --disable-warnings -q
