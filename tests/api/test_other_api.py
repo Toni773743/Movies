@@ -19,7 +19,7 @@ class TestAccountTransactionTemplate:
         @allure.step("Функция перевода денег: transfer_money")
         @allure.description("""
             функция выполняющая транзакцию, имитация вызова функции на стороне тестируемого сервиса
-            и вызывая метод transfer_money, мы какбудтобы делем запрос в api_manager.movies_api.transfer_money
+            и вызывая метод transfer_money, мы как будто бы делаем запрос в api_manager.movies_api.transfer_money
             """)
         def transfer_money(session, from_account, to_account, amount):
             with allure.step(" Получаем счета"):
